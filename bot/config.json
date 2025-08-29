@@ -1,0 +1,16 @@
+{
+  "minecraft": {
+    "host": "paper",
+    "port": 25565,
+    "username": "gepett_bot",
+    "version": "1.21"
+  },
+  "zmq": {
+    "state_pub_endpoint": "tcp://*:5555",
+    "action_rep_endpoint": "tcp://*:5556",
+    "control_rep_endpoint": "tcp://*:5557"
+  },
+  "options": {
+    "state_publish_interval_ms": 500
+  }
+}

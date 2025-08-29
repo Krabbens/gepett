@@ -1,0 +1,35 @@
+# Core ML/RL Framework
+torch==2.3.0 --extra-index-url https://download.pytorch.org/whl/cu121 # PyTorch for CUDA 12.1
+torchvision==0.18.0 --extra-index-url https://download.pytorch.org/whl/cu121
+torchaudio==2.3.0 --extra-index-url https://download.pytorch.org/whl/cu121
+
+# LLM Inference
+vllm # For high-throughput LLM serving
+# exllamav2 # Alternative for quantized models
+# llama-cpp-python # For GGUF models on CPU/GPU
+
+# GPU Acceleration & Quantization
+xformers # Optional, for memory-efficient transformers
+bitsandbytes # For 4/8-bit quantization
+# flash-attn # For FlashAttention support
+
+# Communication
+pyzmq # ZeroMQ for Node.js <-> Python communication
+grpcio # Optional, for gRPC
+protobuf # Optional, for Protobuf
+
+# Data Handling & Storage
+faiss-gpu # For fast similarity search on GPU
+zstandard # For compressing data on disk
+numpy
+pandas # For metrics and data analysis
+pyyaml # For configuration files
+
+# Utilities
+matplotlib # For plotting metrics (no-style)
+tqdm # For progress bars
+# For parsing EBNF
+lark
+
+# Testing
+pytest
