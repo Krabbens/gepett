@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  paper:
+    image: eclipse-temurin:17-jre-jammy
+    container_name: gepett_paper_mc
+    ports:
+      - "25565:25565"
+    volumes:
+      - ../server:/data
+      - ../scripts:/scripts
+    working_dir: /data
+    # This command uses a script to download paper.jar if it doesn't exist, then runs it.
+    command: >
+      bash -c "/scripts/run_server.sh"
+    environment:
+      - MINECRAFT_EULA=TRUE
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mc-health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - gepett_net
+
+  bot:
+    image: node:18-slim
+    container_name: gepett_bot
+    working_dir: /app
+    volumes:
+      - ../bot:/app
+    command: >
+      bash -c "npm install && node bot.js"
+    depends_on:
+      paper:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - gepett_net
+
+  core:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: gepett_core
+    volumes:
+      # Mount the whole project to allow for live code editing
+      - ..:/app
+    working_dir: /app
+    # Keep the container running, command will be executed via 'docker compose exec' or overridden
+    command: tail -f /dev/null
+    depends_on:
+      - bot
+    # This section enables NVIDIA GPU access
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1 # or 'all'
+              capabilities: [gpu]
+    networks:
+      - gepett_net
+    stdin_open: true
+    tty: true
+
+networks:
+  gepett_net:
+    driver: bridge
+
+volumes:
+  worlds_snapshots:
+    driver: local
+  nsg_data:
+    driver: local
+  hbm_cold_storage:
+    driver: local
